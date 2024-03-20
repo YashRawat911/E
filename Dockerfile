@@ -4,7 +4,7 @@ FROM php:apache
 # Set environment variables
 ENV ROUNDCUBE_VERSION=1.5.2
 
-# Install dependencies
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     libapache2-mod-xsendfile \
     libpng-dev \
@@ -15,8 +15,10 @@ RUN apt-get update && apt-get install -y \
     zlib1g-dev \
     mariadb-client \
     git \
- && rm -rf /var/lib/apt/lists/* \
- && docker-php-ext-configure gd --with-jpeg \
+ && rm -rf /var/lib/apt/lists/*
+
+# Install PHP extensions
+RUN docker-php-ext-configure gd --with-jpeg \
  && docker-php-ext-install pdo_mysql mysqli gd gettext xmlrpc xml xsl zip \
  && a2enmod rewrite \
  && echo 'sendmail_path = /bin/true' > /usr/local/etc/php/conf.d/sendmail.ini
